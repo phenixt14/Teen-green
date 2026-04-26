@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teen Green Landscaping | Worcester, MA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            green: {
+              950: '#052e16',
+              900: '#14532d',
+              800: '#166534',
+              700: '#15803d',
+              600: '#16a34a',
+              500: '#22c55e',
+              400: '#4ade80',
+            }
+          },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            scaleIn: {
+              '0%': { opacity: '0', transform: 'scale(0.95)' },
+              '100%': { opacity: '1', transform: 'scale(1)' },
+            }
+          },
+          animation: {
+            fadeUp: 'fadeUp 0.7s ease forwards',
+            fadeIn: 'fadeIn 1s ease forwards',
+            scaleIn: 'scaleIn 0.6s ease forwards',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+
+    .hero-bg {
+      background-image: linear-gradient(rgba(5, 46, 22, 0.60), rgba(5, 46, 22, 0.75)),
+        url('mowing.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .parallax-bg {
+      background-image: linear-gradient(rgba(5, 46, 22, 0.85), rgba(5, 46, 22, 0.85)),
+        url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .img-zoom img {
+      transition: transform 0.5s ease;
+    }
+    .img-zoom:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Scroll reveal */
+    .js-loaded .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .js-loaded .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+    .reveal-delay-6 { transition-delay: 0.6s; }
+
+
+    .nav-scrolled {
+      background: rgba(5, 46, 22, 0.98) !important;
+      backdrop-filter: blur(10px);
+    }
+
+  </style>
+</head>
+<body class="font-sans text-gray-800 overflow-x-hidden">
+
+  <!-- NAV -->
+  <nav id="navbar" class="bg-transparent text-white fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="rounded-full overflow-hidden flex-shrink-0" style="width:64px;height:64px;">
+          <img src="teengreenlogo.jpeg" alt="Teen Green Logo" style="width:112%;height:112%;object-fit:cover;margin:-6% -12% -6% 0%;" />
+        </div>
+        <div class="leading-tight">
+          <span class="text-white text-2xl font-black tracking-tight block">Teen Green</span>
+          <span class="text-green-400 text-base font-semibold hidden sm:block">Landscaping</span>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center gap-8 font-medium" style="font-size:18px;">
+        <a href="#services" class="hover:text-green-400 transition">Services</a>
+        <a href="#about" class="hover:text-green-400 transition">About</a>
+        <a href="#work" class="hover:text-green-400 transition">Our Work</a>
+        <a href="#reviews" class="hover:text-green-400 transition">Reviews</a>
+        <a href="tel:+15085793270" class="text-green-400 font-semibold hover:text-green-300 transition flex items-center gap-1">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+          (508) 579-3270
+        </a>
+        <a href="contact.html" class="bg-green-500 hover:bg-green-400 text-green-950 font-bold px-5 py-2 rounded-full transition shadow-lg">Get a Quote</a>
+      </div>
+      <!-- Mobile menu button -->
+      <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-green-950 px-6 pb-6 flex flex-col gap-4 text-sm font-medium">
+      <a href="#services" class="hover:text-green-400 transition">Services</a>
+      <a href="#about" class="hover:text-green-400 transition">About</a>
+      <a href="#work" class="hover:text-green-400 transition">Our Work</a>
+      <a href="#reviews" class="hover:text-green-400 transition">Reviews</a>
+      <a href="contact.html" class="bg-green-500 text-green-950 font-bold px-5 py-2 rounded-full text-center">Get a Quote</a>
+    </div>
+  </nav>
+
+  <!-- STICKY CALL BUTTON (mobile) -->
+  <a href="tel:+15085793270" class="fixed bottom-6 right-6 z-50 md:hidden bg-green-500 hover:bg-green-400 text-green-950 font-black px-6 py-4 rounded-full shadow-2xl flex items-center gap-2 transition hover:scale-105 transform">
+    <span>📞</span> Call Now
+  </a>
+
+  <!-- HERO -->
+  <section class="hero-bg min-h-screen flex items-center text-white px-6">
+    <div class="max-w-6xl mx-auto w-full pt-20">
+      <div class="max-w-2xl">
+        <p class="text-green-400 font-semibold uppercase tracking-widest text-sm mb-6 animate-fadeIn">Local Lawn Care · Starting at $45</p>
+        <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6 animate-fadeUp" style="text-shadow: 0 2px 20px rgba(0,0,0,0.5)">
+          Your Lawn,<br /><span class="text-green-500">Handled Right.</span>
+        </h1>
+        <p class="text-xl text-gray-200 mb-3 animate-fadeUp" style="animation-delay:0.2s">
+          Local crew. Fair prices. We mow, trim, clean up, and more — and we actually show up when we say we will.
+        </p>
+        <p class="text-green-400 font-semibold mb-10 animate-fadeUp" style="animation-delay:0.3s">
+          Don't let your lawn get out of control.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 animate-fadeUp" style="animation-delay:0.4s">
+          <a href="contact.html" class="bg-green-500 hover:bg-green-400 text-green-950 font-black px-10 py-4 rounded-full text-lg transition shadow-2xl hover:scale-105 transform">Get My Free Lawn Quote</a>
+          <a href="#services" class="border-2 border-white hover:bg-white hover:text-green-950 text-white font-bold px-10 py-4 rounded-full text-lg transition hover:scale-105 transform">See Our Services ↓</a>
+        </div>
+      </div>
+      <!-- Scroll indicator -->
+      <div class="mt-16 animate-bounce">
+        <svg class="w-6 h-6 text-green-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <section class="bg-green-700 text-white py-8 shadow-inner">
+    <div class="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div class="reveal">
+        <p class="text-4xl font-black">5 ★</p>
+        <p class="text-green-200 text-sm mt-1">Yelp Rated</p>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <p class="text-4xl font-black">Free</p>
+        <p class="text-green-200 text-sm mt-1">Estimates</p>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <p class="text-4xl font-black">Fast</p>
+        <p class="text-green-200 text-sm mt-1">Response Time</p>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <p class="text-4xl font-black">Local</p>
+        <p class="text-green-200 text-sm mt-1">Worcester Based</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="py-28 bg-gray-50 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-green-600 font-semibold uppercase tracking-widest text-sm mb-2">What We Offer</p>
+        <h2 class="text-5xl font-black text-green-950">Our Services</h2>
+        <p class="text-gray-500 mt-3 max-w-xl mx-auto text-lg">We handle the yard work so you don't have to. Every job is done clean, on time, and at a price that makes sense.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden card-hover img-zoom reveal reveal-delay-1">
+          <div class="overflow-hidden h-52">
+            <img src="mowing.jpg" alt="Weekly Mowing" class="w-full h-52 object-cover" />
+          </div>
+          <div class="p-6">
+            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-3">
+              <span class="text-xl">🌿</span>
+            </div>
+            <h3 class="text-xl font-bold text-green-900 mb-2">Weekly Mowing</h3>
+            <p class="text-gray-500 text-sm mb-4">A clean, even cut every week so you never have to think about it. Includes edging and blowing — your yard looks sharp every time.</p>
+            <a href="contact.html" class="text-green-600 font-semibold text-sm hover:underline">Get a Quote →</a>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden card-hover img-zoom reveal reveal-delay-2">
+          <div class="overflow-hidden h-52">
+            <img src="fall-cleanup.jpg" alt="Spring & Fall Cleanup" class="w-full h-52 object-cover" />
+          </div>
+          <div class="p-6">
+            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-3">
+              <span class="text-xl">🍂</span>
+            </div>
+            <h3 class="text-xl font-bold text-green-900 mb-2">Spring & Fall Cleanup</h3>
+            <p class="text-gray-500 text-sm mb-4">Leaves, debris, and seasonal mess — gone. We get your yard looking fresh before and after the season.</p>
+            <a href="contact.html" class="text-green-600 font-semibold text-sm hover:underline">Get a Quote →</a>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden card-hover img-zoom reveal reveal-delay-1">
+          <div class="overflow-hidden h-52">
+            <img src="mulching.jpg" alt="Mulching" class="w-full h-52 object-cover" />
+          </div>
+          <div class="p-6">
+            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-3">
+              <span class="text-xl">🪵</span>
+            </div>
+            <h3 class="text-xl font-bold text-green-900 mb-2">Mulching</h3>
+            <p class="text-gray-500 text-sm mb-4">Fresh mulch that keeps your beds clean, retains moisture, and cuts down on weeding. One visit, lasting results.</p>
+            <a href="contact.html" class="text-green-600 font-semibold text-sm hover:underline">Get a Quote →</a>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden card-hover img-zoom reveal reveal-delay-2">
+          <div class="overflow-hidden h-52">
+            <img src="hedge-trimming.jpg" alt="Shrub & Hedge Trimming" class="w-full h-52 object-cover" />
+          </div>
+          <div class="p-6">
+            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-3">
+              <span class="text-xl">🌳</span>
+            </div>
+            <h3 class="text-xl font-bold text-green-900 mb-2">Shrub & Hedge Trimming</h3>
+            <p class="text-gray-500 text-sm mb-4">Neat, shaped hedges that make your whole property look more polished. Clean cuts, every time.</p>
+            <a href="contact.html" class="text-green-600 font-semibold text-sm hover:underline">Get a Quote →</a>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden card-hover img-zoom reveal reveal-delay-3">
+          <div class="overflow-hidden h-52">
+            <img src="weeding.jpg" alt="Weeding" class="w-full h-52 object-cover" />
+          </div>
+          <div class="p-6">
+            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-3">
+              <span class="text-xl">🌱</span>
+            </div>
+            <h3 class="text-xl font-bold text-green-900 mb-2">Weeding</h3>
+            <p class="text-gray-500 text-sm mb-4">We pull the weeds so you don't have to. Beds stay clean and weed-free all season.</p>
+            <a href="contact.html" class="text-green-600 font-semibold text-sm hover:underline">Get a Quote →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-28 px-6 bg-white">
+    <div class="max-w-3xl mx-auto">
+      <div class="w-full reveal">
+        <p class="text-green-600 font-semibold uppercase tracking-widest text-sm mb-2">About Us</p>
+        <h2 class="text-4xl font-black text-green-950 mb-6">Worcester Kids.<br/>Serious About Lawns.</h2>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Teen Green is a small Worcester-based crew of local college students. We started this because we wanted to offer homeowners a reliable, affordable alternative to the big guys — and we actually show up when we say we will.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-8">
+          You'll always deal directly with us. No middleman, no surprise costs, no strangers showing up unannounced — just a dependable local crew that does clean work at a fair price.
+        </p>
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center gap-4 bg-green-50 rounded-xl p-4">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-white text-lg">✓</span>
+            </div>
+            <span class="text-gray-700 font-medium">We respond within 24 hours — usually same day</span>
+          </div>
+          <div class="flex items-center gap-4 bg-green-50 rounded-xl p-4">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-white text-lg">✓</span>
+            </div>
+            <span class="text-gray-700 font-medium">Fully equipped — mower, trimmer, blower</span>
+          </div>
+          <div class="flex items-center gap-4 bg-green-50 rounded-xl p-4">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-white text-lg">✓</span>
+            </div>
+            <span class="text-gray-700 font-medium">Local Worcester students — we're your neighbors</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR WORK -->
+  <section id="work" class="py-28 bg-gray-50 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-green-600 font-semibold uppercase tracking-widest text-sm mb-2">Results Speak</p>
+        <h2 class="text-5xl font-black text-green-950">Our Work</h2>
+        <p class="text-gray-500 mt-3 text-lg">Before & after transformations from real Worcester yards.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="rounded-2xl overflow-hidden shadow-xl card-hover reveal reveal-delay-1">
+          <img src="Before-after1.png" alt="Lawn Mowing Before & After" class="w-full" />
+          <div class="bg-white p-4">
+            <p class="font-semibold text-green-900">Lawn Mowing Transformation</p>
+            <p class="text-gray-500 text-sm">Worcester, MA</p>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden shadow-xl card-hover reveal reveal-delay-2">
+          <img src="Before-after2.png" alt="Overgrowth Cleanup Before & After" class="w-full" />
+          <div class="bg-white p-4">
+            <p class="font-semibold text-green-900">Overgrowth & Brush Cleanup</p>
+            <p class="text-gray-500 text-sm">Worcester, MA</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews" class="parallax-bg py-28 px-6 text-white">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-green-400 font-semibold uppercase tracking-widest text-sm mb-2">What Clients Say</p>
+        <h2 class="text-5xl font-black">Real Reviews</h2>
+        <p class="text-green-300 mt-2 text-sm">From our Yelp page</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <div class="bg-white bg-opacity-10 backdrop-blur-sm border border-white border-opacity-20 rounded-2xl p-6 reveal reveal-delay-1">
+          <div class="flex items-center gap-1 mb-3">
+            <span class="text-yellow-400 text-lg">★★★★★</span>
+          </div>
+          <p class="text-gray-200 text-sm leading-relaxed mb-5">"These guys have been doing our lawn for 2 years now. They do a great job, always on time and great communication. Their rates are also very reasonable."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold text-white">M</div>
+            <div>
+              <p class="font-semibold text-sm">Meghan B.</p>
+              <p class="text-green-400 text-xs">Yelp ★★★★★</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white bg-opacity-10 backdrop-blur-sm border border-white border-opacity-20 rounded-2xl p-6 reveal reveal-delay-2">
+          <div class="flex items-center gap-1 mb-3">
+            <span class="text-yellow-400 text-lg">★★★★★</span>
+          </div>
+          <p class="text-gray-200 text-sm leading-relaxed mb-5">"Very reliable and reasonable estimate. Very happy with the service — would hire them again!!!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold text-white">T</div>
+            <div>
+              <p class="font-semibold text-sm">Tom W.</p>
+              <p class="text-green-400 text-xs">Yelp ★★★★★</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white bg-opacity-10 backdrop-blur-sm border border-white border-opacity-20 rounded-2xl p-6 reveal reveal-delay-3">
+          <div class="flex items-center gap-1 mb-3">
+            <span class="text-yellow-400 text-lg">★★★★★</span>
+          </div>
+          <p class="text-gray-200 text-sm leading-relaxed mb-5">"Great service, friendly and on time! Even offered to scoop the dog poop before mowing so I don't have to. Highly recommend!!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold text-white">K</div>
+            <div>
+              <p class="font-semibold text-sm">Karen F.</p>
+              <p class="text-green-400 text-xs">Yelp ★★★★★</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="bg-green-700 py-16 px-6 text-white text-center">
+    <h2 class="text-4xl font-black mb-3">Ready for a cleaner lawn?</h2>
+    <p class="text-green-200 text-lg mb-8">We respond within 24 hours. Free quote, no obligation.</p>
+    <a href="contact.html" class="bg-white text-green-900 font-black px-10 py-4 rounded-full text-lg hover:bg-green-100 transition shadow-xl hover:scale-105 transform inline-block">Get My Free Lawn Quote →</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-black text-gray-400 py-10 px-6 text-center text-sm">
+    <a href="index.html" class="flex items-center justify-center gap-3 mb-2">
+      <div class="rounded-full overflow-hidden" style="width:48px;height:48px;">
+        <img src="teengreenlogo.jpeg" alt="Teen Green Logo" style="width:112%;height:112%;object-fit:cover;margin:-6% -12% -6% 0%;" />
+      </div>
+      <p class="text-white font-bold text-xl">Teen Green Landscaping</p>
+    </a>
+    <p>Worcester, MA &nbsp;|&nbsp; Serving the Greater Worcester Area</p>
+    <div class="flex justify-center gap-6 mt-4 text-xs">
+      <a href="#services" class="hover:text-green-400 transition">Services</a>
+      <a href="#about" class="hover:text-green-400 transition">About</a>
+      <a href="#work" class="hover:text-green-400 transition">Our Work</a>
+      <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+    </div>
+    <p class="mt-4">© 2026 Teen Green Landscaping. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Enable scroll reveal animations
+    document.body.classList.add('js-loaded');
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('nav-scrolled');
+      } else {
+        navbar.classList.remove('nav-scrolled');
+      }
+    });
+
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+  </script>
+
+</body>
+</html>

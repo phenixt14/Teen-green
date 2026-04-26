@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | Teen Green</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            green: {
+              950: '#052e16', 900: '#14532d', 800: '#166534',
+              700: '#15803d', 600: '#16a34a', 500: '#22c55e', 400: '#4ade80',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-xl p-10 w-full max-w-sm text-center">
+      <div class="mb-6">
+        <p class="text-green-700 font-black text-2xl">🌿 Teen Green</p>
+        <p class="text-gray-500 text-sm mt-1">Admin Panel</p>
+      </div>
+      <input id="password-input" type="password" placeholder="Enter password" class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-green-400" />
+      <button onclick="login()" class="w-full bg-green-600 hover:bg-green-500 text-white font-black py-3 rounded-xl transition">Log In</button>
+      <p id="login-error" class="text-red-500 text-sm mt-3 hidden">Incorrect password.</p>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="dashboard" class="hidden min-h-screen">
+
+    <!-- Header -->
+    <div class="bg-green-900 text-white px-6 py-4 flex items-center justify-between shadow">
+      <div class="flex items-center gap-3">
+        <p class="font-black text-xl">🌿 Teen Green Admin</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="last-refresh" class="text-green-400 text-xs hidden md:block"></span>
+        <span id="contact-count" class="bg-green-500 text-green-950 font-bold text-sm px-3 py-1 rounded-full"></span>
+        <button onclick="logout()" class="text-green-400 hover:text-white text-sm transition">Log out</button>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+
+      <!-- Stats row -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-2xl shadow p-5 text-center">
+          <p id="stat-total" class="text-4xl font-black text-green-700">0</p>
+          <p class="text-gray-500 text-sm mt-1">Total Leads</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5 text-center">
+          <p id="stat-new" class="text-4xl font-black text-blue-600">0</p>
+          <p class="text-gray-500 text-sm mt-1">New</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5 text-center">
+          <p id="stat-contacted" class="text-4xl font-black text-yellow-500">0</p>
+          <p class="text-gray-500 text-sm mt-1">Contacted</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5 text-center">
+          <p id="stat-booked" class="text-4xl font-black text-green-600">0</p>
+          <p class="text-gray-500 text-sm mt-1">Booked</p>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="flex flex-col sm:flex-row gap-3 mb-6 items-start sm:items-center justify-between">
+        <input id="search" type="text" placeholder="Search by name, address, or service..." oninput="renderTable()" class="border border-gray-300 rounded-xl px-4 py-2 w-full sm:w-80 focus:outline-none focus:ring-2 focus:ring-green-400 text-sm" />
+        <div class="flex gap-2">
+          <button onclick="exportCSV()" class="bg-green-600 hover:bg-green-500 text-white font-semibold text-sm px-4 py-2 rounded-xl transition">Export CSV</button>
+          <button onclick="clearAll()" class="bg-red-100 hover:bg-red-200 text-red-600 font-semibold text-sm px-4 py-2 rounded-xl transition">Clear All</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="bg-white rounded-2xl shadow overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-green-50 text-green-800 font-semibold">
+              <tr>
+                <th class="px-4 py-3 text-left">Date</th>
+                <th class="px-4 py-3 text-left">Name</th>
+                <th class="px-4 py-3 text-left">Phone</th>
+                <th class="px-4 py-3 text-left">Address</th>
+                <th class="px-4 py-3 text-left">Services</th>
+                <th class="px-4 py-3 text-left">Lawn Size</th>
+                <th class="px-4 py-3 text-left">Notes</th>
+                <th class="px-4 py-3 text-left">Status</th>
+                <th class="px-4 py-3 text-left"></th>
+              </tr>
+            </thead>
+            <tbody id="contacts-table" class="divide-y divide-gray-100">
+            </tbody>
+          </table>
+        </div>
+        <div id="empty-state" class="hidden text-center py-16 text-gray-400">
+          <p class="text-4xl mb-2">📋</p>
+          <p class="font-semibold">No contacts yet.</p>
+          <p class="text-sm mt-1">Submissions from your contact form will appear here.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const PASSWORD = 'teengreen2025';
+
+    function login() {
+      const val = document.getElementById('password-input').value;
+      if (val === PASSWORD) {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        renderTable();
+        document.getElementById('last-refresh').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString();
+      } else {
+        document.getElementById('login-error').classList.remove('hidden');
+      }
+    }
+
+    document.getElementById('password-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') login();
+    });
+
+    function logout() {
+      document.getElementById('dashboard').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('password-input').value = '';
+    }
+
+    function getContacts() {
+      return JSON.parse(localStorage.getItem('tg_contacts') || '[]');
+    }
+
+    function saveContacts(data) {
+      localStorage.setItem('tg_contacts', JSON.stringify(data));
+    }
+
+    function updateStats(contacts) {
+      document.getElementById('stat-total').textContent = contacts.length;
+      document.getElementById('stat-new').textContent = contacts.filter(c => c.status === 'New').length;
+      document.getElementById('stat-contacted').textContent = contacts.filter(c => c.status === 'Contacted').length;
+      document.getElementById('stat-booked').textContent = contacts.filter(c => c.status === 'Booked').length;
+      document.getElementById('contact-count').textContent = contacts.length + ' leads';
+    }
+
+    function renderTable() {
+      const contacts = getContacts();
+      const query = document.getElementById('search').value.toLowerCase();
+      const filtered = contacts.filter(c =>
+        (c.name + c.address + c.services + c.phone).toLowerCase().includes(query)
+      );
+
+      updateStats(contacts);
+
+      const tbody = document.getElementById('contacts-table');
+      const empty = document.getElementById('empty-state');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+
+      const statusColors = {
+        'New': 'bg-blue-100 text-blue-700',
+        'Contacted': 'bg-yellow-100 text-yellow-700',
+        'Booked': 'bg-green-100 text-green-700',
+        'Not interested': 'bg-red-100 text-red-600',
+      };
+
+      tbody.innerHTML = filtered.map(c => `
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-4 py-3 text-gray-500 whitespace-nowrap">${c.date}</td>
+          <td class="px-4 py-3 font-semibold text-gray-800">${c.name || '—'}</td>
+          <td class="px-4 py-3">
+            <a href="tel:${c.phone}" class="text-green-600 hover:underline">${c.phone || '—'}</a>
+          </td>
+          <td class="px-4 py-3 text-gray-600">${c.address || '—'}</td>
+          <td class="px-4 py-3 text-gray-600">${c.services || '—'}</td>
+          <td class="px-4 py-3 text-gray-500">${c.lawnSize || '—'}</td>
+          <td class="px-4 py-3 text-gray-500 max-w-xs truncate">${c.notes || '—'}</td>
+          <td class="px-4 py-3">
+            <select onchange="updateStatus(${c.id}, this.value)" class="text-xs font-semibold rounded-lg px-2 py-1 border-0 focus:outline-none focus:ring-2 focus:ring-green-400 ${statusColors[c.status] || 'bg-gray-100 text-gray-600'}">
+              <option ${c.status==='New'?'selected':''}>New</option>
+              <option ${c.status==='Contacted'?'selected':''}>Contacted</option>
+              <option ${c.status==='Booked'?'selected':''}>Booked</option>
+              <option ${c.status==='Not interested'?'selected':''}>Not interested</option>
+            </select>
+          </td>
+          <td class="px-4 py-3">
+            <button onclick="deleteContact(${c.id})" class="text-red-400 hover:text-red-600 text-xs transition">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateStatus(id, newStatus) {
+      const contacts = getContacts();
+      const idx = contacts.findIndex(c => c.id === id);
+      if (idx !== -1) {
+        contacts[idx].status = newStatus;
+        saveContacts(contacts);
+        renderTable();
+      }
+    }
+
+    function deleteContact(id) {
+      if (!confirm('Delete this contact?')) return;
+      const contacts = getContacts().filter(c => c.id !== id);
+      saveContacts(contacts);
+      renderTable();
+    }
+
+    function clearAll() {
+      if (!confirm('Clear ALL contacts? This cannot be undone.')) return;
+      localStorage.removeItem('tg_contacts');
+      renderTable();
+    }
+
+    // Auto-refresh every 30 seconds
+    let autoRefreshInterval = setInterval(() => {
+      if (!document.getElementById('dashboard').classList.contains('hidden')) {
+        renderTable();
+        document.getElementById('last-refresh').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString();
+      }
+    }, 30000);
+
+    function exportCSV() {
+      const contacts = getContacts();
+      const headers = ['Date', 'Name', 'Phone', 'Address', 'Lawn Size', 'Services', 'Notes', 'Status'];
+      const rows = contacts.map(c => [c.date, c.name, c.phone, c.address, c.lawnSize, c.services, c.notes, c.status].map(v => `"${(v||'').replace(/"/g,'""')}"`).join(','));
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'teengreen-contacts.csv';
+      a.click();
+    }
+  </script>
+
+</body>
+</html>
