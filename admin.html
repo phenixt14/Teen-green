@@ -114,14 +114,16 @@
 
   <script>
     const PASSWORD = 'teengreen2025';
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwTFvw1eHEfUtXIZRXKjFKZVYDWcMj9DVn3ft0_NcVhtz9R5dGnkCtQFNkXIreC-5IX/exec';
+
+    let allContacts = [];
 
     function login() {
       const val = document.getElementById('password-input').value;
       if (val === PASSWORD) {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('dashboard').classList.remove('hidden');
-        renderTable();
-        document.getElementById('last-refresh').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString();
+        loadContacts();
       } else {
         document.getElementById('login-error').classList.remove('hidden');
       }
@@ -137,12 +139,29 @@
       document.getElementById('password-input').value = '';
     }
 
-    function getContacts() {
-      return JSON.parse(localStorage.getItem('tg_contacts') || '[]');
-    }
-
-    function saveContacts(data) {
-      localStorage.setItem('tg_contacts', JSON.stringify(data));
+    async function loadContacts() {
+      try {
+        const res = await fetch(SHEETS_URL);
+        allContacts = await res.json();
+        // Normalize keys to lowercase
+        allContacts = allContacts.map(c => ({
+          id: c.id || c.ID,
+          date: c.date || c.Date,
+          name: c.name || c.Name,
+          phone: c.phone || c.Phone,
+          email: c.email || c.Email,
+          address: c.address || c.Address,
+          lawnSize: c.lawnsize || c.lawnSize || c['Lawn Size'],
+          services: c.services || c.Services,
+          notes: c.notes || c.Notes,
+          status: c.status || c.Status || 'New'
+        }));
+      } catch(err) {
+        console.log('Failed to load contacts:', err);
+        allContacts = [];
+      }
+      renderTable();
+      document.getElementById('last-refresh').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString();
     }
 
     function updateStats(contacts) {
@@ -154,13 +173,12 @@
     }
 
     function renderTable() {
-      const contacts = getContacts();
       const query = document.getElementById('search').value.toLowerCase();
-      const filtered = contacts.filter(c =>
-        (c.name + c.address + c.services + c.phone).toLowerCase().includes(query)
+      const filtered = allContacts.filter(c =>
+        ((c.name||'') + (c.address||'') + (c.services||'') + (c.phone||'')).toLowerCase().includes(query)
       );
 
-      updateStats(contacts);
+      updateStats(allContacts);
 
       const tbody = document.getElementById('contacts-table');
       const empty = document.getElementById('empty-state');
@@ -181,7 +199,7 @@
 
       tbody.innerHTML = filtered.map(c => `
         <tr class="hover:bg-gray-50 transition">
-          <td class="px-4 py-3 text-gray-500 whitespace-nowrap">${c.date}</td>
+          <td class="px-4 py-3 text-gray-500 whitespace-nowrap">${c.date || '—'}</td>
           <td class="px-4 py-3 font-semibold text-gray-800">${c.name || '—'}</td>
           <td class="px-4 py-3">
             <a href="tel:${c.phone}" class="text-green-600 hover:underline">${c.phone || '—'}</a>
@@ -191,55 +209,48 @@
           <td class="px-4 py-3 text-gray-500">${c.lawnSize || '—'}</td>
           <td class="px-4 py-3 text-gray-500 max-w-xs truncate">${c.notes || '—'}</td>
           <td class="px-4 py-3">
-            <select onchange="updateStatus(${c.id}, this.value)" class="text-xs font-semibold rounded-lg px-2 py-1 border-0 focus:outline-none focus:ring-2 focus:ring-green-400 ${statusColors[c.status] || 'bg-gray-100 text-gray-600'}">
+            <select onchange="updateStatus('${c.id}', this.value)" class="text-xs font-semibold rounded-lg px-2 py-1 border-0 focus:outline-none focus:ring-2 focus:ring-green-400 ${statusColors[c.status] || 'bg-gray-100 text-gray-600'}">
               <option ${c.status==='New'?'selected':''}>New</option>
               <option ${c.status==='Contacted'?'selected':''}>Contacted</option>
               <option ${c.status==='Booked'?'selected':''}>Booked</option>
               <option ${c.status==='Not interested'?'selected':''}>Not interested</option>
             </select>
           </td>
-          <td class="px-4 py-3">
-            <button onclick="deleteContact(${c.id})" class="text-red-400 hover:text-red-600 text-xs transition">Delete</button>
-          </td>
+          <td class="px-4 py-3 text-gray-400 text-xs">—</td>
         </tr>
       `).join('');
     }
 
-    function updateStatus(id, newStatus) {
-      const contacts = getContacts();
-      const idx = contacts.findIndex(c => c.id === id);
-      if (idx !== -1) {
-        contacts[idx].status = newStatus;
-        saveContacts(contacts);
+    async function updateStatus(id, newStatus) {
+      try {
+        await fetch(SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'updateStatus', id: id, status: newStatus })
+        });
+        const c = allContacts.find(c => String(c.id) === String(id));
+        if (c) c.status = newStatus;
         renderTable();
+      } catch(err) {
+        console.log('Update error:', err);
       }
     }
 
-    function deleteContact(id) {
-      if (!confirm('Delete this contact?')) return;
-      const contacts = getContacts().filter(c => c.id !== id);
-      saveContacts(contacts);
-      renderTable();
-    }
-
     function clearAll() {
-      if (!confirm('Clear ALL contacts? This cannot be undone.')) return;
-      localStorage.removeItem('tg_contacts');
-      renderTable();
+      alert('To clear all contacts, delete the rows directly in your Google Sheet.');
     }
 
     // Auto-refresh every 30 seconds
     let autoRefreshInterval = setInterval(() => {
       if (!document.getElementById('dashboard').classList.contains('hidden')) {
-        renderTable();
-        document.getElementById('last-refresh').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString();
+        loadContacts();
       }
     }, 30000);
 
     function exportCSV() {
-      const contacts = getContacts();
       const headers = ['Date', 'Name', 'Phone', 'Address', 'Lawn Size', 'Services', 'Notes', 'Status'];
-      const rows = contacts.map(c => [c.date, c.name, c.phone, c.address, c.lawnSize, c.services, c.notes, c.status].map(v => `"${(v||'').replace(/"/g,'""')}"`).join(','));
+      const rows = allContacts.map(c => [c.date, c.name, c.phone, c.address, c.lawnSize, c.services, c.notes, c.status].map(v => `"${(v||'').replace(/"/g,'""')}"`).join(','));
       const csv = [headers.join(','), ...rows].join('\n');
       const blob = new Blob([csv], { type: 'text/csv' });
       const a = document.createElement('a');

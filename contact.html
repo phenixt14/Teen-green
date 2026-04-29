@@ -178,15 +178,14 @@
       document.getElementById('mobile-menu').classList.toggle('hidden');
     });
 
-    // *** REPLACE THIS WITH YOUR FORMSPREE ENDPOINT ***
     const FORMSPREE_URL = 'https://formspree.io/f/mnjlypqk';
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwTFvw1eHEfUtXIZRXKjFKZVYDWcMj9DVn3ft0_NcVhtz9R5dGnkCtQFNkXIreC-5IX/exec';
 
     document.querySelector('form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const form = e.target;
       const services = [...form.querySelectorAll('input[type=checkbox]:checked')].map(c => c.value);
 
-      // Save to localStorage for admin panel
       const entry = {
         id: Date.now(),
         date: new Date().toLocaleString(),
@@ -199,11 +198,20 @@
         notes: form.notes.value,
         status: 'New'
       };
-      const existing = JSON.parse(localStorage.getItem('tg_contacts') || '[]');
-      existing.unshift(entry);
-      localStorage.setItem('tg_contacts', JSON.stringify(existing));
 
-      // Send to Formspree (triggers email + SMS notification)
+      // Save to Google Sheets
+      try {
+        await fetch(SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entry)
+        });
+      } catch(err) {
+        console.log('Sheets error:', err);
+      }
+
+      // Send to Formspree (triggers email notification)
       try {
         await fetch(FORMSPREE_URL, {
           method: 'POST',
