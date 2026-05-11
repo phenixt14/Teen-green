@@ -54,6 +54,13 @@
       background-attachment: fixed;
     }
 
+    @media (max-width: 768px) {
+      .hero-bg {
+        background-attachment: scroll;
+        background-position: center center;
+      }
+    }
+
     .parallax-bg {
       background-image: linear-gradient(rgba(5, 46, 22, 0.85), rgba(5, 46, 22, 0.85)),
         url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1600&q=80');
@@ -442,8 +449,16 @@
     });
 
     // Mobile menu toggle
+    const mobileMenu = document.getElementById('mobile-menu');
     document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-      document.getElementById('mobile-menu').classList.toggle('hidden');
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Close mobile menu when a link is clicked
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
     });
 
     // Scroll reveal
